@@ -24,5 +24,6 @@ gfsh \
 cat gemfire-output.txt
 # checks redundancy in regions using the suggested method from pivotal docs:
 # http://gemfire.docs.pivotal.io/docs-gemfire/latest/developing/partitioned_regions/checking_region_redundancy.html
-cat gemfire-output.txt | grep numBucketsWithoutRedundancy | grep "| 0" &&
+## Comment this out as I only have one AZ/redundancy-zone
+#cat gemfire-output.txt | grep numBucketsWithoutRedundancy | grep "| 0" &&
 cat gemfire-output.txt | grep redundancy-zone | grep ": us-east1-b"
