@@ -20,10 +20,15 @@ gfsh \
 -e "describe config --member=cacheserver-0" \
 -e "describe config --member=cacheserver-1" \
 -e "describe config --member=cacheserver-2" \
+-e "describe config --member=cacheserver-3" \
+-e "describe config --member=cacheserver-4" \
+-e "describe config --member=cacheserver-5" \
 -e "show metrics --categories=partition --region=testing" > gemfire-output.txt
 cat gemfire-output.txt
 # checks redundancy in regions using the suggested method from pivotal docs:
 # http://gemfire.docs.pivotal.io/docs-gemfire/latest/developing/partitioned_regions/checking_region_redundancy.html
 ## Comment this out as I only have one AZ/redundancy-zone
-#cat gemfire-output.txt | grep numBucketsWithoutRedundancy | grep "| 0" &&
-cat gemfire-output.txt | grep redundancy-zone | grep ": us-east1-b"
+cat gemfire-output.txt | grep numBucketsWithoutRedundancy | grep "| 0" &&
+cat gemfire-output.txt | grep redundancy-zone | grep ": AZ1" &&
+cat gemfire-output.txt | grep redundancy-zone | grep ": AZ2" &&
+cat gemfire-output.txt | grep redundancy-zone | grep ": AZ3"
