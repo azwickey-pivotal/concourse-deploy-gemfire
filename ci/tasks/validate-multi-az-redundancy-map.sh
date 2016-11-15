@@ -29,6 +29,6 @@ cat gemfire-output.txt
 # http://gemfire.docs.pivotal.io/docs-gemfire/latest/developing/partitioned_regions/checking_region_redundancy.html
 ## Comment this out as I only have one AZ/redundancy-zone
 cat gemfire-output.txt | grep numBucketsWithoutRedundancy | grep "| 0" &&
-cat gemfire-output.txt | grep redundancy-zone | grep ": AZ1" &&
-cat gemfire-output.txt | grep redundancy-zone | grep ": AZ2" &&
-cat gemfire-output.txt | grep redundancy-zone | grep ": AZ3"
+cat gemfire-output.txt | grep redundancy-zone | grep ": az1" &&
+cat gemfire-output.txt | grep redundancy-zone | grep ": az2" &&
+cat gemfire-output.txt | grep redundancy-zone | grep ": az3"

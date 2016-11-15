@@ -4,22 +4,20 @@ groups:
   - get-product-version
   - deploy
   - validation-test
-  - rest-api-test
 - name: deploy
   jobs:
   - get-product-version
   - deploy
-- name: validation 
+- name: validation
   jobs:
   - validation-test
-  - rest-api-test
 
 resources:
 - name: concourse-deploy-gemfire
   type: git
-  check_every: 4h
+  check_every: 1m
   source:
-    uri: https://github.com/c0-ops/concourse-deploy-gemfire
+    uri: https://github.com/azwickey-pivotal/concourse-deploy-gemfire
     branch: master
 - name: omg-cli
   type: github-release
@@ -27,7 +25,7 @@ resources:
   source:
     user: enaml-ops
     repository: omg-cli
-- name: p-gemfire-bosh-release 
+- name: p-gemfire-bosh-release
   type: github-release
   check_every: 4h
   source:
@@ -95,24 +93,6 @@ jobs:
         outputs:
         - name: versions
           path: ""
-#    - task: update-pipeline
-#      config:
-#        platform: linux
-#        image_resource:
-#          type: docker-image
-#          source:
-#            repository: virtmerlin/deploy-worker
-#        run:
-#          path: concourse-deploy-gemfire/ci/tasks/update-pipeline.sh
-#        params:
-#          PIPELINE_NAME: deploy-gemfire
-#          CONCOURSE_URL: {{concourse-url}}
-#          CONCOURSE_USER: {{concourse-user}}
-#          CONCOURSE_PASS: {{concourse-pass}}
-#        inputs:
-#        - name: concourse-deploy-gemfire
-#        - name: versions
-#        outputs:
 - name: deploy
   plan:
     - get: concourse-deploy-gemfire
@@ -136,7 +116,7 @@ jobs:
       trigger: true
       params:
         globs:
-        - GemFire-v1.0.3.tgz
+        - GemFire-v1.0.4.tgz
     - task: generate-manifest
       config:
         platform: linux
@@ -179,9 +159,12 @@ jobs:
         - stemcells/bosh-stemcell*.tgz
         releases:
         - p-gemfire-bosh-release/*.tgz
-- name: validation-test 
+- name: validation-test
   plan:
     - get: concourse-deploy-gemfire
+      trigger: true
+      passed:
+        - deploy
     - task: has-multi-az-redundancy-map
       config:
         platform: linux
@@ -196,10 +179,7 @@ jobs:
           LOCATOR_CONNECTION: {{locator-connection-test}}
         inputs:
         - name: concourse-deploy-gemfire
-- name: rest-api-test 
-  plan:
-    - get: concourse-deploy-gemfire
-    - task: has-active-gemfire-rest-api 
+    - task: has-active-gemfire-rest-api
       config:
         platform: linux
         image_resource:
@@ -212,4 +192,3 @@ jobs:
           REST_API_ENDPOINT: {{rest-api-endpoint}}
         inputs:
         - name: concourse-deploy-gemfire
-
